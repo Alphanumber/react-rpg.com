@@ -7,6 +7,7 @@ import DownloadAppPopup       from './components/download-app-popup';
 import DialogManager          from './features/dialog-manager';
 import EndlessFloorCounter    from './components/endless-floor-counter';
 import Footer                 from './components/footer';
+import Game            from './features/game';
 import GameMenus              from './features/game-menus';
 import World                  from './features/world';
 import Viewport               from './components/viewport';
@@ -33,7 +34,7 @@ const App = ({ appState, world }) => {
     }
   }, []);
 
-  const { optOutDownload, sideMenu } = appState;
+  const { optOutDownload } = appState;
   const { gameMode, floorNum } = world;
 
   let showFooter = true;
@@ -51,7 +52,7 @@ const App = ({ appState, world }) => {
         open={showDownloadPopup}
         onClose={() => setShowDownloadPopup(false)} />
 
-      <div className={`centered ${sideMenu ? 'flex-row' : 'flex-column'}`}>
+      <Game>
 
         <Viewport>
 
@@ -66,7 +67,7 @@ const App = ({ appState, world }) => {
 
         <GameMenus />
 
-      </div>
+      </Game>
 
       { showFooter && <Footer /> }
     </>
