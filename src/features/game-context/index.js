@@ -1,8 +1,11 @@
 import React    from 'react';
 
 export const GameContext = React.createContext({
-    canvas: null,
-    gameLoop: null
+    canvasRenderingContext: null,
+    gameLoop: null,
+    setCanvasSize: null,
+    viewportWidth: 0,
+    viewportHeight: 0
 });
 
 export default GameContext;

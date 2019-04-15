@@ -1,35 +1,26 @@
 import React       from 'react';
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
+import GameContext from "../../features/game-context";
 
 import {
   GAME_VIEWPORT_SIZE,
   GAME_VIEWPORT_SIZE_LG
-} from '../../config/constants';
+} from "../../config/constants";
 
-import './viewport.scss';
+class Viewport extends React.Component {
+  static contextType = GameContext;
 
-const Viewport = ({ appState, children }) => {
+  componentDidUpdate() {
+    const { largeView } = this.props.appState;
+    const { canvasRenderingContext, setCanvasSize } = this.context;
+    const gameSize = largeView ? GAME_VIEWPORT_SIZE_LG : GAME_VIEWPORT_SIZE;
+    setCanvasSize(canvasRenderingContext, gameSize, gameSize);
+  }
 
-  const { largeView, sideMenu } = appState;
-
-  const gameSize = (largeView ? GAME_VIEWPORT_SIZE_LG : GAME_VIEWPORT_SIZE);
-  const margin = sideMenu ? '8px 0 0' : '8px auto 0';
-
-  const styles = {
-    width: gameSize,
-    height: gameSize,
-    margin
-  };
-
-  return(
-    <div style={styles}
-      className='viewport__container white-border'>
-
-      { children }
-
-    </div>
-  );
-};
+  render() {
+    return <>{this.props.children}</>;
+  }
+}
 
 const mapStateToProps = ({ appState }) => ({ appState });
 

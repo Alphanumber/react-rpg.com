@@ -4,40 +4,62 @@ import GameContext          from '../game-context';
 import GameLoop             from '../game-loop';
 
 class Game extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.canvasRef = React.createRef();
-        this.gameLoop = new GameLoop();
-      }
+    this.canvasRef = React.createRef();
+    this.gameLoop = new GameLoop();
+    this.width = 0;
+    this.height = 0;
 
-      componentDidMount() {
-        if (this.canvasRef && this.canvasRef.current) {
-            this.canvas = this.canvasRef.current.getContext('2d');
-        }
-        this.gameLoop.start();
-      }
+    this.setCanvasSize = this.setCanvasSize.bind(this);
+  }
 
-      componentWillUnmount() {
-        this.gameLoop.stop();
-      }
+  componentDidMount() {
+    if (this.canvasRef && this.canvasRef.current) {
+      this.canvasRenderingContext = this.canvasRef.current.getContext("2d");
+    }
+    this.gameLoop.start();
+  }
 
-    render() {
-        const { appState } = this.props;
-        const { sideMenu } = appState;
+  componentWillUnmount() {
+    this.gameLoop.stop();
+  }
 
-        return (
-            <GameContext.Provider value={{canvas: this.canvas, gameLoop: this.gameLoop}}>
-                <div className={`centered ${sideMenu ? 'flex-row' : 'flex-column'}`}>
-                    {this.props.children}
-                </div>
-            </GameContext.Provider>
-        );
-      }
+  setCanvasSize(canvasRenderingContext, width, height) {
+    canvasRenderingContext.canvas.width = width;
+    canvasRenderingContext.canvas.height = height;
+    this.width = width;
+    this.height = height;
+  }
+
+  render() {
+    const { appState } = this.props;
+    const { sideMenu } = appState;
+
+    return (
+      <GameContext.Provider
+        value={{
+          canvasRenderingContext: this.canvasRenderingContext,
+          gameLoop: this.gameLoop,
+          setCanvasSize: this.setCanvasSize,
+          viewportWidth: this.width,
+          viewportHeight: this.height
+        }}
+      >
+        <div className={`centered ${sideMenu ? "flex-row" : "flex-column"}`}>
+          <canvas ref={this.canvasRef}>{this.props.children}</canvas>
+        </div>
+      </GameContext.Provider>
+    );
+  }
 }
 
-const mapStateToProps = ({appState}) => ({appState});
+const mapStateToProps = ({ appState }) => ({ appState });
 
 const actions = {};
 
-export default connect(mapStateToProps, actions)(Game);
+export default connect(
+  mapStateToProps,
+  actions
+)(Game);
